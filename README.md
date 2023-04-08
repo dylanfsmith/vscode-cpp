@@ -16,16 +16,16 @@ sudo snap install code
 
 Unlike some other IDEs, VSCode takes the approach of "one project per instance". This means that you will typically have one vscode instance running per project or repo. This approach, along with an alternative "multi-root workspace" option, is described [here](https://code.visualstudio.com/docs/editor/workspaces).
 
-So we first create the project directory and then launch VSCode pointing at that directory:
+Normally you launch VSCode from the command line by providing it with the project directory as an argument like this:
 ```bash
-cd ~
-mkdir -p git/vscode-cpp
-code git/vscode-cpp
+code <project-path>
 ```
+However, we have yet to create our project, so we have no directory to point at yet. We will launch VSCode and then create our project directory by cloning the git repository:
 
-https://code.visualstudio.com/docs/sourcecontrol/intro-to-git
-
-Enter `Git: Clone` in the Command Palette (Ctrl+Shift+P) and then the repository url, 
+* Run `code` on the command line (from any directory).
+* Enter `Git: Clone` in the Command Palette (Ctrl+Shift+P) and provide the repository url, `git@github.com:dylanfsmith/vscode-cpp.git`. 
+* Chose the path `~/git` as the project destination when prompted.
+* Finally, chose `Open` to open the new project in the workspace.
 
 ## Install vscode extensions
 
