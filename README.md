@@ -35,7 +35,7 @@ Skim through the following guides:
 
 Install the following extensions. Copy the provided command snippets then Quick Open (Ctrl+P), paste, and install:
 * C/C++ Extension Pack: `ext install ms-vscode.cpptools-extension-pack`
-* 
+* Git Extension Pack (optional): `ext install donjayamanne.git-extension-pack`
 
 ## VSCode settings
 
