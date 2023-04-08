@@ -16,7 +16,16 @@ sudo snap install code
 
 Unlike some other IDEs, VSCode takes the approach of "one project per instance". This means that you will typically have one vscode instance running per project or repo. This approach, along with an alternative "multi-root workspace" option, is described [here](https://code.visualstudio.com/docs/editor/workspaces).
 
+So we first create the project directory and then launch VSCode pointing at that directory:
+```bash
+cd ~
+mkdir -p git/vscode-cpp
+code git/vscode-cpp
+```
 
+https://code.visualstudio.com/docs/sourcecontrol/intro-to-git
+
+Enter `Git: Clone` in the Command Palette (Ctrl+Shift+P) and then the repository url, 
 
 ## Install vscode extensions
 
@@ -30,3 +39,6 @@ Install the following extensions. Copy the provided command snippets then Quick 
 
 ## VSCode settings
 
+## References
+
+* [https://www.pragmaticlinux.com/2021/07/import-a-cmake-project-into-visual-studio-code/]
