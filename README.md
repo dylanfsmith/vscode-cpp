@@ -66,6 +66,34 @@ Activate the `Explorer` view (by clicking `Explorer` icon in the activity bar). 
 
 To view the rendered markdown we use the `Open Preview` action. This action can be accessed from the set of buttons at the top right of every editor, called the **editor toolbar**. This toolbar is context-dependent and changes based on the content of the editor. With `README.md` active you will find a button with the tooltip `Open Preview to the Side`. Clicking on this shows the rendered markdown. To close the preview editor hover over the name of the file in the tab at the top of the editor area. An 'x' will appear, and clicking it will close the window. Alternatively you can use Ctrl+W.
 
+## CMake Extension
+
+One of the C/C++ Tools extensions is the CMake Tools extension. This extension is activated anytime a workspace is opened with a `CMakeLists.txt` file in the root directory.
+
+When the CMake configuration step is performed, the CMake extension adds the [appropriate flag](https://cmake.org/cmake/help/v3.5/variable/CMAKE_EXPORT_COMPILE_COMMANDS.html) to generate the `compiler_commands.json` file in a directory that can be specified in the settings (as we do). This file is then used by the VSCode C/C++ Extension to facilitate intellisense (contrary to what is stated [here](https://github.com/microsoft/vscode-cpptools/issues/6592), which suggests that CMake extension bypasses `compile_commands.json`).
+
+Our problem is that we do not have a single build directory and therefore we do not have a single `compile_commands.json` file. In practice, with this configuration, I have had to manually set the `compileCommands` path in `c_cpp_properties.json` to a *particular* build type since the C/C++ Extension (which owns `c_cpp_properties.json`) does not know the CMake-specific `${buildType}` variable. 
+
+```json
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "linux-clang-x64",
+            "compileCommands": "${workspaceFolder}/build/Debug/compile_commands.json"
+        }
+    ],
+    "version": 4
+}
+```
+
+[This](https://vector-of-bool.github.io/docs/vscode-cmake-tools/configuring.html#a-clean-configure) suggests that CMake Tools does sufficient cleaning when switching variant that it is ok to put reuse the build dir (not breaking out by variant/build type).
 
 ## VSCode settings
 
@@ -75,6 +103,12 @@ To ensure that the settings are applied to all workspaces created by the user, c
    * `Editor: Tab Size` -> 3
    * `CMake: Build Directory` -> `${workspaceFolder}/build/${buildType}` [create separate directories for each build type]
 
+### add vertical rulers
+
+To add vertical ruler at column 80, modify `settings.json`:
+```json
+    "editor.rulers": [80]
+```
 
 ## Building
 
@@ -108,6 +142,13 @@ buildType:
 
 We prefer to keep the compiler flags for the build types in the source code, using the approach described [here](https://gitlab.kitware.com/cmake/community/-/wikis/FAQ#how-can-i-extend-the-build-modes-with-a-custom-made-one-). The `cmake-variants.yaml` then simply makes the VSCode CMake extension aware of the custom types.
 
+## Useful shortcuts
+
+| shortcut | name | description|
+|----------|------|------------|
+| Ctrl+P   | Quick Open | open any file in workspace |
+| Ctrl+T   | 
+
 ## Other extensions
 
 ### disassembly view
@@ -138,6 +179,72 @@ This extension makes it easier to look up documentation on syntax, keywords, and
 ext install TwoUnderscorez.vscode-websearch
 ```
 
+## Snippets
+
+Intellisense provides shortcuts for commonly used text, called `snippets`. For example, if we type the word `for` in a C++ file intellisense will pop up a list of suggestions, with `for` next to an open square at the top of the list. The square indicates that a suggest is a snippet. Pressing enter will activate the snippet, and the following code will be inserted, with the cursor moving between the various sections when tab is pressed:
+```cpp
+	for (size_t i = 0; i < count; i++)
+	{
+		/* code */
+	}
+```
+
+You can create custom snippets, either globally or for a particular workspace, with the option of targetting a particular language. For example, I want a decorative "header" to distinguish sections in my `CMakeLists.txt` files. I'll call it `header1` and I want it to look like this:
+```cmake
+##################################################
+## <section name>
+##################################################
+<cursor>
+```
+The "Configure User Snippets" from command palette, choose cmake from the drop-down list of languages, and then fill in the file with the following:
+```
+{
+	"header1": {
+		"prefix": "header1",
+		"body": [
+			"##################################################",
+			"## ${1:sectionName}",
+			"##################################################",
+			"${2}"
+		],
+		"description": "level 1 header"
+	}
+}
+```
+
+## GitHub Copilot
+
+### Refactoring
+
+Here's an example. I have updated `Catch2` and `Approx` is no longer supported. So this line
+```cpp
+  CHECK(x == Approx(y));
+```
+needs to be changed to this line
+```cpp
+  CHECK_THAT(x, WithinAbs(y, tolerance));
+```
+Once I make the change in one place, in the next such change
+```cpp
+  CHECK(a == Approx(b*b));
+```
+I can just type this before the target statement
+```cpp
+  CHECK_THAT
+```
+and Copilot will generate the correct statement with the correct variables, apparently using the context to determine those variables
+```cpp
+  CHECK_THAT(a, WithinAbs(b*b, tolerance));
+```
+
+Here's another example of moving to `almost always auto`. Given any variable declaration of template type such as
+```cpp
+vector<int> numbers = {1,2,3};
+```
+we can type `auto` (in some cases need `auto numbers`) on an empty line before and find the following suggestion:
+```cpp
+auto numbers = vector<int>{1,2,3};
+```
 
 ## References
 
@@ -151,3 +258,9 @@ ext install TwoUnderscorez.vscode-websearch
 * Source control
    * You will generally have to switch between `Explorer` and `Source Control` views to do your git work.
    * You cannot just right-click on a folder to add it to `.gitignore` as this will add all of the files individually. Instead you must manually add folder to `.gitignore`.
+
+   ## Comparisons to CLion
+
+   | feature | Eclipse | CLion | VSCode | 
+   |---------|---------|-------|--------|
+   | launch control | easy via run and debug configs | easy and allows sudo |yes | not 

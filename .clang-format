@@ -1,0 +1,31 @@
+---
+BasedOnStyle: LLVM
+AccessModifierOffset: -3
+AlignAfterOpenBracket: BlockIndent
+AlignConsecutiveAssignments:
+  PadOperators: false
+AlignEscapedNewlines: DontAlign
+AlignOperands: AlignAfterOperator
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortLoopsOnASingleLine: true
+AlwaysBreakBeforeMultilineStrings: true
+AlwaysBreakTemplateDeclarations: Yes
+BinPackParameters: false
+BraceWrapping: {}
+BreakBeforeBinaryOperators: NonAssignment
+BreakConstructorInitializers: AfterColon
+BreakInheritanceList: AfterColon
+ConstructorInitializerIndentWidth: 3
+ContinuationIndentWidth: 3
+IncludeBlocks: Preserve
+IndentCaseBlocks: true
+IndentCaseLabels: true
+IndentWidth: 3
+ObjCBlockIndentWidth: 3
+PackConstructorInitializers: CurrentLine
+TabWidth: 3
+UseTab: AlignWithSpaces
